@@ -6,6 +6,7 @@ import { ConnectState } from '@/models/connect';
 import { CurrentUser } from '@/models/user';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
+import keycloak from '../../keycloak';
 
 export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
   currentUser?: CurrentUser;
@@ -25,9 +26,10 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       const { dispatch } = this.props;
 
       if (dispatch) {
-        dispatch({
+        keycloak.logout();
+        /* dispatch({
           type: 'login/logout',
-        });
+        }); */
       }
 
       return;
@@ -49,20 +51,20 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
         {menu && (
           <Menu.Item key="center">
             <UserOutlined />
-            个人中心
+            Account
           </Menu.Item>
         )}
         {menu && (
           <Menu.Item key="settings">
             <SettingOutlined />
-            个人设置
+            Settings
           </Menu.Item>
         )}
         {menu && <Menu.Divider />}
 
         <Menu.Item key="logout">
           <LogoutOutlined />
-          退出登录
+          Logout
         </Menu.Item>
       </Menu>
     );

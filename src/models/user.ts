@@ -1,7 +1,28 @@
 import { Effect, Reducer } from 'umi';
 
-import { queryCurrent, query as queryUsers } from '@/services/user';
+// import { queryCurrent, query as queryUsers } from '@/services/user';
+import { query as queryUsers } from '@/services/user';
+import { KeycloakProfile } from 'keycloak-js';
+import keycloak from '../keycloak';
 
+// modified user to correspond to KeycloakProfile
+export interface CurrentUser {
+  id?: string;
+  username?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  enabled?: boolean;
+  emailVerified?: boolean;
+  createdTimestamp?: number;
+  avatar?: string;
+  attributes?: {
+    key: string;
+    label: string;
+  }[];
+}
+
+/* original from ant design pro template
 export interface CurrentUser {
   avatar?: string;
   name?: string;
@@ -15,6 +36,7 @@ export interface CurrentUser {
   userid?: string;
   unreadCount?: number;
 }
+*/
 
 export interface UserModelState {
   currentUser?: CurrentUser;
@@ -33,6 +55,22 @@ export interface UserModelType {
   };
 }
 
+async function loadCurrentUser(): Promise<CurrentUser> {
+  return keycloak.loadUserProfile().then(function (profile: KeycloakProfile) {
+    const user: CurrentUser = {
+      id: profile.id,
+      username: profile.username,
+      email: profile.email,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      enabled: profile.enabled,
+      emailVerified: profile.emailVerified,
+      createdTimestamp: profile.createdTimestamp,
+    };
+    return user;
+  });
+}
+
 const UserModel: UserModelType = {
   namespace: 'user',
 
@@ -49,7 +87,8 @@ const UserModel: UserModelType = {
       });
     },
     *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
+      // const response = yield call(queryCurrent);
+      const response = yield call(loadCurrentUser);
       yield put({
         type: 'saveCurrentUser',
         payload: response,
