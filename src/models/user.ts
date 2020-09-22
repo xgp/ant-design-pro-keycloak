@@ -12,6 +12,7 @@ export interface CurrentUser {
   email?: string;
   firstName?: string;
   lastName?: string;
+  name?: string;
   enabled?: boolean;
   emailVerified?: boolean;
   createdTimestamp?: number;
@@ -57,14 +58,15 @@ export interface UserModelType {
 
 async function loadCurrentUser(): Promise<CurrentUser> {
   return keycloak.loadUserProfile().then(function (profile: KeycloakProfile) {
+    const t = keycloak.tokenParsed;
     const user: CurrentUser = {
-      id: profile.id,
-      username: profile.username,
-      email: profile.email,
-      firstName: profile.firstName,
-      lastName: profile.lastName,
+      id: t.sub,
+      username: t.preferred_username,
+      email: t.email,
+      firstName: t.given_name,
+      lastName: t.family_name,
       enabled: profile.enabled,
-      emailVerified: profile.emailVerified,
+      emailVerified: t.email_verified,
       createdTimestamp: profile.createdTimestamp,
     };
     return user;

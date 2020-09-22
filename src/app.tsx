@@ -4,9 +4,8 @@
  */
 
 import React from 'react';
-import { KeycloakProvider } from '@react-keycloak/web';
-import { KeycloakInitOptions } from 'keycloak-js';
-// import { PageLoading } from './components/PageLoading';
+import { KeycloakProvider, KeycloakEvent, KeycloakTokens } from '@react-keycloak/web';
+import { KeycloakInitOptions, KeycloakError } from 'keycloak-js';
 import { PageLoading } from '@ant-design/pro-layout';
 import keycloak from './keycloak';
 
@@ -15,11 +14,11 @@ const initConfig: KeycloakInitOptions = {
   // onLoad: 'check-sso',
 };
 
-function onKeycloakEvent(event, error) {
+function onKeycloakEvent(event: KeycloakEvent, error: KeycloakError) {
   console.log('onKeycloakEvent', event, error);
 }
 
-function onKeycloakTokens(tokens) {
+function onKeycloakTokens(tokens: KeycloakTokens) {
   console.log('onKeycloakTokens', tokens);
 }
 
