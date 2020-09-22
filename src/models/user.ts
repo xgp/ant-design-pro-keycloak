@@ -65,6 +65,7 @@ async function loadCurrentUser(): Promise<CurrentUser> {
       email: t.email,
       firstName: t.given_name,
       lastName: t.family_name,
+      name: t.name ? t.name : '',
       enabled: profile.enabled,
       emailVerified: t.email_verified,
       createdTimestamp: profile.createdTimestamp,

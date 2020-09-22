@@ -15,11 +15,11 @@ const initConfig: KeycloakInitOptions = {
 };
 
 function onKeycloakEvent(event: KeycloakEvent, error: KeycloakError) {
-  console.log('onKeycloakEvent', event, error);
+  console.debug('onKeycloakEvent', event, error);
 }
 
 function onKeycloakTokens(tokens: KeycloakTokens) {
-  console.log('onKeycloakTokens', tokens);
+  console.debug('onKeycloakTokens', tokens);
 }
 
 /**
