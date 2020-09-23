@@ -7,6 +7,7 @@ import React from 'react';
 import { KeycloakProvider, KeycloakEvent, KeycloakTokens } from '@react-keycloak/web';
 import { KeycloakInitOptions, KeycloakError } from 'keycloak-js';
 import { PageLoading } from '@ant-design/pro-layout';
+import { setAuthority } from '@/utils/authority';
 import keycloak from './keycloak';
 
 const initConfig: KeycloakInitOptions = {
@@ -20,6 +21,10 @@ function onKeycloakEvent(event: KeycloakEvent, error: KeycloakError) {
 
 function onKeycloakTokens(tokens: KeycloakTokens) {
   console.debug('onKeycloakTokens', tokens);
+  // store the current "Authority" each time the token is loaded.
+  if (keycloak.authenticated) {
+    setAuthority(keycloak.tokenParsed.resource_access[keycloak.clientId].roles);
+  }
 }
 
 /**
