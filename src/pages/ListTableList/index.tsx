@@ -14,15 +14,15 @@ import { queryRule, updateRule, addRule, removeRule } from './service';
  * @param fields
  */
 const handleAdd = async (fields: TableListItem) => {
-  const hide = message.loading('正在添加');
+  const hide = message.loading('Adding');
   try {
     await addRule({ ...fields });
     hide();
-    message.success('添加成功');
+    message.success('Added successfully');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
+    message.error('Add failed!');
     return false;
   }
 };
@@ -32,7 +32,7 @@ const handleAdd = async (fields: TableListItem) => {
  * @param fields
  */
 const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
+  const hide = message.loading('Updating');
   try {
     await updateRule({
       name: fields.name,
@@ -41,11 +41,11 @@ const handleUpdate = async (fields: FormValueType) => {
     });
     hide();
 
-    message.success('配置成功');
+    message.success('Updated successfully');
     return true;
   } catch (error) {
     hide();
-    message.error('配置失败请重试！');
+    message.error('Update failed!');
     return false;
   }
 };
@@ -55,18 +55,18 @@ const handleUpdate = async (fields: FormValueType) => {
  * @param selectedRows
  */
 const handleRemove = async (selectedRows: TableListItem[]) => {
-  const hide = message.loading('正在删除');
+  const hide = message.loading('Deleting');
   if (!selectedRows) return true;
   try {
     await removeRule({
       key: selectedRows.map((row) => row.key),
     });
     hide();
-    message.success('删除成功，即将刷新');
+    message.success('Deleted successfully, refreshing');
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
+    message.error('Delete failed!');
     return false;
   }
 };
@@ -80,14 +80,14 @@ const TableList: React.FC<{}> = () => {
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '规则名称',
+      title: 'Rule Name',
       dataIndex: 'name',
-      tip: '规则名称是唯一的 key',
+      tip: 'Rule Name is unique key',
       formItemProps: {
         rules: [
           {
             required: true,
-            message: '规则名称为必填项',
+            message: 'Rulle Name is required',
           },
         ],
       },
@@ -96,30 +96,30 @@ const TableList: React.FC<{}> = () => {
       },
     },
     {
-      title: '描述',
+      title: 'Description',
       dataIndex: 'desc',
       valueType: 'textarea',
     },
     {
-      title: '服务调用次数',
+      title: 'Number of cells',
       dataIndex: 'callNo',
       sorter: true,
       hideInForm: true,
-      renderText: (val: string) => `${val} 万`,
+      renderText: (val: string) => `${val} 10k`,
     },
     {
-      title: '状态',
+      title: 'Status',
       dataIndex: 'status',
       hideInForm: true,
       valueEnum: {
-        0: { text: '关闭', status: 'Default' },
-        1: { text: '运行中', status: 'Processing' },
-        2: { text: '已上线', status: 'Success' },
-        3: { text: '异常', status: 'Error' },
+        0: { text: 'Shut down', status: 'Default' },
+        1: { text: 'Running', status: 'Processing' },
+        2: { text: 'Online', status: 'Success' },
+        3: { text: 'Abnormal', status: 'Error' },
       },
     },
     {
-      title: '上次调度时间',
+      title: 'Last scheduled time',
       dataIndex: 'updatedAt',
       sorter: true,
       valueType: 'dateTime',
@@ -130,13 +130,13 @@ const TableList: React.FC<{}> = () => {
           return false;
         }
         if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
+          return <Input {...rest} placeholder="Enter the reason for the exception! " />;
         }
         return defaultRender(item);
       },
     },
     {
-      title: '操作',
+      title: 'Operating',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => (
@@ -147,10 +147,10 @@ const TableList: React.FC<{}> = () => {
               setStepFormValues(record);
             }}
           >
-            配置
+            Update
           </a>
           <Divider type="vertical" />
-          <a href="">订阅警报</a>
+          <a href="">Subscribe to alerts</a>
         </>
       ),
     },
@@ -159,7 +159,7 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<TableListItem>
-        headerTitle="查询表格"
+        headerTitle="Enquiry form"
         actionRef={actionRef}
         rowKey="key"
         search={{
@@ -167,7 +167,7 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            <PlusOutlined /> New
           </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
@@ -180,9 +180,9 @@ const TableList: React.FC<{}> = () => {
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              Chosen <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> item&nbsp;&nbsp;
               <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
+                Number of cells {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
               </span>
             </div>
           }
@@ -194,9 +194,9 @@ const TableList: React.FC<{}> = () => {
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            批量删除
+            Batch delete
           </Button>
-          <Button type="primary">批量审批</Button>
+          <Button type="primary">Batch approve</Button>
         </FooterToolbar>
       )}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
