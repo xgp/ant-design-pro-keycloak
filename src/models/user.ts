@@ -1,7 +1,5 @@
 import { Effect, Reducer } from 'umi';
 
-// import { queryCurrent, query as queryUsers } from '@/services/user';
-import { query as queryUsers } from '@/services/user';
 import { KeycloakProfile } from 'keycloak-js';
 import keycloak from '../keycloak';
 
@@ -21,6 +19,7 @@ export interface CurrentUser {
     key: string;
     label: string;
   }[];
+  unreadCount?: number;
 }
 
 /* original from ant design pro template
@@ -47,12 +46,10 @@ export interface UserModelType {
   namespace: 'user';
   state: UserModelState;
   effects: {
-    fetch: Effect;
     fetchCurrent: Effect;
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState>;
-    changeNotifyCount: Reducer<UserModelState>;
   };
 }
 
@@ -82,13 +79,6 @@ const UserModel: UserModelType = {
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(queryUsers);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
     *fetchCurrent(_, { call, put }) {
       // const response = yield call(queryCurrent);
       const response = yield call(loadCurrentUser);
